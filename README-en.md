@@ -3,6 +3,8 @@
 
 This C++ project demonstrates the reverse-engineered pipeline of the newer "Bear Talk (XiongYue)" ciphertext format, whose online service was taken down in March 2025. It supports decrypting post-2020 XiongYue ciphertext samples.
 
+Copyright (C) 2026 Wormwaker, SheepChef.
+
 ## Source Attribution
 
 The overall project approach is based on:
