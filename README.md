@@ -2,6 +2,7 @@
 简体中文 | [English](./README-en.md)
 
 用于演示 2025 年 3 月被下架的“与熊论道（熊曰）”新版密文流程的 C++ 示例项目。支持解密之前 2020 年以后的熊曰密文。
+
 Copyright (C) 2026 Wormwaker, SheepChef.
 
 ## 来源说明
