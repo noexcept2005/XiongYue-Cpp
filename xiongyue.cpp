@@ -1,3 +1,7 @@
+/*	
+ *  严禁用于违法用途
+ *  -std=c++17
+ */
 #include <algorithm>
 #include <cstdint>
 #include <filesystem>
@@ -437,17 +441,20 @@ bool runSelfTest() {
 }
 
 void printUsage(const char* program) {
-    std::cout << "Usage:\n";
-    std::cout << "  " << program << " -e <plaintext>\n";
-    std::cout << "  " << program << " -d <ciphertext-with-optional-noise>\n";
-    std::cout << "  " << program << " -ef <input_file> [output_file]\n";
-    std::cout << "  " << program << " -df <input_file> [output_file]\n";
-    std::cout << "  " << program << " --menu\n";
-    std::cout << "  " << program << " --self-test\n";
-    std::cout << "  " << program << " --help\n";
+    std::cout << "Usage:\n\n";
+    std::cout << " xiongyue [-e <plaintext>] [-d <ciphertext-with-optional-noise>] [-ef <input_file> [output_file]] [-df <input_file> [output_file]] [--menu] [--self-test] [--help]\n\n";
+    std::cout << "  " << " -e <plaintext>\t\tEncrypt single line of plain text.\n";
+    std::cout << "  " << " -d <ciphertext-with-optional-noise>\t\tDecrypt single line with optional noise.\n";
+    std::cout << "  " << " -ef <input_file> [output_file]\t\tEncrypt file content.\n";
+    std::cout << "  " << " -df <input_file> [output_file]\t\tDecrypt file content.\n";
+    std::cout << "  " << " --menu\t\tShow menu.\n";
+    std::cout << "  " << " --self-test\t\tA simple self test.\n";
+    std::cout << "  " << " --help\t\tPrint this help message.\n\n";
+    std::cout << "Program Repo: https://github.com/noexcept2005/XiongYue-Cpp \n";
 }
 
 int runMenu() {
+	std::cout << " xiongyue-cpp  by Wormwaker\n ref: https://github.com/SheepChef/Abracadabra/issues/123\n\n";
     while (true) {
         std::cout << "\n===== XiongYue Demo =====\n";
         std::cout << "1) Encrypt text (single line)\n";
@@ -457,7 +464,8 @@ int runMenu() {
         std::cout << "5) Decrypt file\n";
         std::cout << "6) Self-test\n";
         std::cout << "0) Exit\n";
-        std::cout << "Select: ";
+        std::cout << "=========================\n";
+        std::cout << ">> Select: ";
 
         std::string choice;
         if (!std::getline(std::cin, choice)) {
@@ -470,25 +478,25 @@ int runMenu() {
 
         try {
             if (choice == "1") {
-                const std::string input = promptLine("Input text: ");
-                std::cout << "Ciphertext:\n" << encryptXiongYue(input) << "\n";
+                const std::string input = promptLine(">> Input text: ");
+                std::cout << ">> Ciphertext:\n" << encryptXiongYue(input) << "\n";
             } else if (choice == "2") {
-                const std::string input = promptLine("Input ciphertext: ");
-                std::cout << "Plaintext:\n" << decryptXiongYue(input) << "\n";
+                const std::string input = promptLine(">> Input ciphertext (No 熊曰 Prefix): ");
+                std::cout << ">> Plaintext:\n" << decryptXiongYue(input) << "\n";
             } else if (choice == "3") {
                 const std::string input = readMultilineInput(kMultilineEndMarker);
-                std::cout << "Ciphertext:\n" << encryptXiongYue(input) << "\n";
+                std::cout << ">> Ciphertext:\n" << encryptXiongYue(input) << "\n";
             } else if (choice == "4") {
-                const std::string inPath = promptLine("Input file path: ");
-                const std::string outPath = promptLine("Output file path (empty=print): ");
+                const std::string inPath = promptLine(">> Input file path: ");
+                const std::string outPath = promptLine(">> Output file path (empty=print): ");
                 const std::string plaintext = readFileAll(inPath);
                 const std::string ciphertext = encryptXiongYue(plaintext);
 
                 if (outPath.empty()) {
-                    std::cout << "Ciphertext:\n" << ciphertext << "\n";
+                    std::cout << ">> Ciphertext:\n" << ciphertext << "\n";
                 } else {
                     writeFileAll(outPath, ciphertext);
-                    std::cout << "Saved encrypted output to: " << outPath << "\n";
+                    std::cout << "[+] Saved encrypted output to: " << outPath << "\n";
                 }
             } else if (choice == "5") {
                 const std::string inPath = promptLine("Input file path: ");
@@ -497,22 +505,22 @@ int runMenu() {
                 const std::string plaintext = decryptXiongYue(ciphertext);
 
                 if (outPath.empty()) {
-                    std::cout << "Plaintext:\n" << plaintext << "\n";
+                    std::cout << ">> Plaintext:\n" << plaintext << "\n";
                 } else {
                     writeFileAll(outPath, plaintext);
-                    std::cout << "Saved decrypted output to: " << outPath << "\n";
+                    std::cout << "[+] Saved decrypted output to: " << outPath << "\n";
                 }
             } else if (choice == "6") {
                 if (runSelfTest()) {
-                    std::cout << "Self-test passed.\n";
+                    std::cout << "[+] Self-test passed.\n";
                 } else {
-                    std::cout << "Self-test failed.\n";
+                    std::cout << "[-] Self-test failed.\n";
                 }
             } else {
-                std::cout << "Invalid selection.\n";
+                std::cout << "[!] Invalid selection.\n";
             }
         } catch (const std::exception& ex) {
-            std::cout << "Error: " << ex.what() << "\n";
+            std::cout << "[!] Error: " << ex.what() << "\n";
         }
     }
 }
@@ -530,21 +538,21 @@ int main(int argc, char* argv[]) {
 
         const std::string mode = args[1];
 
-        if (mode == "--help" || mode == "-h") {
+        if (mode == "--help" || mode == "-h" || mode == "-?" || mode == "/?") {
             printUsage(args[0].c_str());
             return 0;
         }
 
-        if (mode == "--menu") {
+        if (mode == "--menu" || mode == "-m") {
             return runMenu();
         }
 
         if (mode == "--self-test") {
             if (runSelfTest()) {
-                std::cout << "Self-test passed.\n";
+                std::cout << "[+] Self-test passed.\n";
                 return 0;
             }
-            std::cerr << "Self-test failed.\n";
+            std::cerr << "[-] Self-test failed.\n";
             return 1;
         }
 
@@ -593,7 +601,7 @@ int main(int argc, char* argv[]) {
         printUsage(args[0].c_str());
         return 1;
     } catch (const std::exception& ex) {
-        std::cerr << "Fatal error: " << ex.what() << "\n";
+        std::cerr << "[!] Fatal error: " << ex.what() << "\n";
         return 1;
     }
 }
